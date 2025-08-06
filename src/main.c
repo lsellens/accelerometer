@@ -49,6 +49,7 @@ void cleanup(void) {
 int main(int argc, const char *const argv[]) {
   atexit(cleanup);
   signal(SIGINT, intHandler);
+  setvbuf(stdout, NULL, _IOFBF, 4096);
 
   int bSave = 0;
   int duration = 0;
