@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+const uint8_t I2C_ADDR = 0x53;
 const int freqDefault = 250;
 const int freqMax = 3200;
 const double accConversion = 2 * 16.0 / 8192.0;

@@ -1,3 +1,4 @@
+#include "adxl345.h"
 #include "interface.h"
 #include "interface_i2c.h"
 #include "interface_spi.h"

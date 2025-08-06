@@ -12,6 +12,7 @@
 #define DEVID 0x00
 #define EXPECTED_DEVID 0xE5
 
+extern const uint8_t I2C_ADDR;
 extern const int freqDefault;
 extern const int freqMax;
 extern const double accConversion;
