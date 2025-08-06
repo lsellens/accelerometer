@@ -1,4 +1,4 @@
-name: "Cross Compile and Publish Binary"
+name: "Cross Compile and Publish Binaries"
 
 on:
   release:
@@ -20,16 +20,37 @@ jobs:
       - name: Install cross-compiler
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-arm-linux-gnueabihf
+          sudo apt-get install -y gcc-arm-linux-gnueabihf gcc-arm-linux-gnueabihf binutils-arm-linux-gnueabihf \
+                                  gcc-arm-linux-gnueabihf gcc-arm-linux-gnueabihf binutils-arm-linux-gnueabihf \
+                                  gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
 
-      - name: Build for Raspberry Pi (armhf)
+      - name: Build armv6 hard-float binary (for Pi Zero, Pi 1, Pi 2)
         run: |
-          make -C src CC=arm-linux-gnueabihf-gcc
-          mv src/accelerometer accelerometer
+          make -C src clean
+          make -C src CC="arm-linux-gnueabihf-gcc -march=armv6 -mfpu=vfp -mfloat-abi=hard -marm" CFLAGS="-O2"
+          arm-linux-gnueabihf-strip src/accelerometer
+          mv src/accelerometer accelerometer-armv6
 
-      - name: Upload binary to release
+      - name: Build armv7 hard-float binary (for Pi 2, Pi 3 32-bit OS)
+        run: |
+          make -C src clean
+          make -C src CC="arm-linux-gnueabihf-gcc -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard" CFLAGS="-O2"
+          arm-linux-gnueabihf-strip src/accelerometer
+          mv src/accelerometer accelerometer-armv7
+
+      - name: Build aarch64 binary (for Pi 3+, Pi 4, Pi 5 64-bit OS)
+        run: |
+          make -C src clean
+          make -C src CC="aarch64-linux-gnu-gcc" CFLAGS="-O2"
+          aarch64-linux-gnu-strip src/accelerometer
+          mv src/accelerometer accelerometer-arm64
+
+      - name: Upload binaries to release
         uses: softprops/action-gh-release@v1
         with:
-          files: accelerometer
+          files: |
+            accelerometer-armv6
+            accelerometer-armv7
+            accelerometer-arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
