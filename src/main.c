@@ -133,6 +133,7 @@ int main(int argc, const char *const argv[]) {
   }
 
   printf("Press Ctrl+C to stop\n");
+  fflush(stdout);
   double delay = 1.0 / vFreq, tStart = time_time();
   int totalSamples = 0;
 
